@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: daos-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: daos-client
+  template:
+    metadata:
+      labels:
+        app: daos-client
+    spec:
+      securityContext:
+        runAsUser: 0 # 1000 for daos_server, 1001 for daos_client
+        runAsGroup: 0
+      containers:
+      - name: daos-client
+        securityContext:
+          privileged: true
+        image: us-central1-docker.pkg.dev/cloud-daos-perf-testing/docker-registry/daos-csi-el8:latest
+        command: ["daos_agent"]
+        volumeMounts:
+        - name: daos-agent
+          mountPath: /opt/daos/etc
+      volumes:
+      - name: daos-agent
+        configMap:
+          name: daos-agent

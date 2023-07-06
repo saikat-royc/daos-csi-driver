@@ -1,0 +1,23 @@
+options:
+  machineType: 'E2_HIGHCPU_32'
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "https://github.com/tyuchn/daos.git#release/2.4", # forked from https://github.com/daos-stack/daos.git#release/2.4
+        "-t",
+        "us-central1-docker.pkg.dev/$PROJECT_ID/docker-registry/daos-csi-el8",
+        "-f",
+        "utils/docker/Dockerfile.el.8",
+        "--build-arg",
+        "JOBS=32",
+        "--build-arg",
+        "DEPS_JOBS=32",
+      ]
+
+images:
+  - "us-central1-docker.pkg.dev/$PROJECT_ID/docker-registry/daos-csi-el8"
+tags: []
+
+# gcloud builds submit --region=us-central1 --project cloud-daos-perf-testing  --timeout=18000s .
