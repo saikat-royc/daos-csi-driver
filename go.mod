@@ -1,3 +1,3 @@
-module githuh.com/tyuchn/daos-csi-driver
+module sigs.k8s.io/daos-csi-driver
 
-go 1.20
+go 1.21
