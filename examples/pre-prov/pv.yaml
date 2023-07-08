@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: my-pre-pv
+  annotations:
+    pv.kubernetes.io/provisioned-by: daos.csi.storage.gke.io
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 1Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  volumeMode: Filesystem
+  csi:
+    driver: daos.csi.storage.gke.io
+    # Modify this to use the zone, filestore instance and share name.
+    volumeHandle: "cont1"
+    volumeAttributes:
+      ip: "" # Modify this to Pre-provisioned Filestore instance IP
+      volume: "" # Modify this to Pre-provisioned Filestore instance share name

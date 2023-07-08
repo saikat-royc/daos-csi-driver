@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: daos-csi-driver
+resources:
+- ../../base/setup
+- ../../base/node
+transformers:
+- ../../images/stable
+patches:
+- path: project_patch_csi_driver.json
+  target:
+    group: storage.k8s.io
+    kind: CSIDriver
+    name: daos.csi.storage.gke.io
+    version: v1
+images:
+- name: gke.gcr.io/daos-csi-driver
+  newName: gcr.io/saikatroyc-stateful-joonix/daos-csi-driver
+  newTag: v1
