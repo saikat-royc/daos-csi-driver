@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-daos-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-daos-deploy
+  template:
+    metadata:
+      labels:
+        app: test-daos-deploy
+    spec:
+      containers:
+       - name: daos-sidecar
+         imagePullPolicy: Always
+         image: gcr.io/cloud-daos-perf-testing/daos-sidecar:v1-dfuse
+         volumeMounts:
+           - mountPath: /daos-tmp
+             name: daos-tmp
+           - mountPath: /opt/daos/etc
+             name: daos-agent-config
+       - name: web-server
+         image: nginx
+         volumeMounts:
+           - mountPath: /usr/share/nginx/html
+             name: mypvc
+      volumes:
+       - name: daos-tmp
+         emptyDir:
+           sizeLimit: 500Mi
+       - name: daos-agent-config
+         configMap:
+          name: daos-agent
+       - name: mypvc
+         persistentVolumeClaim:
+           claimName: preprov-pvc

@@ -39,6 +39,10 @@ func New(mounterPath string) (mount.Interface, error) {
 }
 
 func (m *Mounter) Mount(source string, target string, fstype string, options []string) error {
+	daosConfig, err := util.ParseVolumeId(source)
+	if err != nil {
+		return fmt.Errorf("Failed to parse source %v", source)
+	}
 	csiMountOptions := prepareMountOptions(options)
 
 	// Prepare the temp emptyDir path
@@ -56,7 +60,7 @@ func (m *Mounter) Mount(source string, target string, fstype string, options []s
 	csiMountOptions = append(csiMountOptions, fmt.Sprintf("fd=%v", fd))
 
 	klog.V(4).Info("mounting the fuse filesystem")
-	err = m.MountSensitiveWithoutSystemdWithMountFlags(source, target, fstype, csiMountOptions, nil, []string{"--internal-only"})
+	err = m.MountSensitiveWithoutSystemdWithMountFlags(daosConfig.Container, target, fstype, csiMountOptions, nil, []string{"--internal-only"})
 	if err != nil {
 		return fmt.Errorf("failed to mount the fuse filesystem: %w", err)
 	}
@@ -108,8 +112,8 @@ func (m *Mounter) Mount(source string, target string, fstype string, options []s
 
 	// Prepare sidecar mounter MountConfig
 	mc := sidecarmounter.MountConfig{
-		DaosContainerName: source,
-		DaosPoolName:      "pool1",
+		DaosContainerName: daosConfig.Container,
+		DaosPoolName:      daosConfig.Pool,
 		FileDescriptor:    fd,
 	}
 	mcb, err := json.Marshal(mc)

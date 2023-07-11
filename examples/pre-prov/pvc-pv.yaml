@@ -1,3 +1,16 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: preprov-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  volumeName: my-pre-pv
+  resources:
+    requests:
+      storage: 1Ti
+---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -15,7 +28,4 @@ spec:
   csi:
     driver: daos.csi.storage.gke.io
     # Modify this to use the zone, filestore instance and share name.
-    volumeHandle: "cont1"
-    volumeAttributes:
-      ip: "" # Modify this to Pre-provisioned Filestore instance IP
-      volume: "" # Modify this to Pre-provisioned Filestore instance share name
+    volumeHandle: "pool1/cont1"

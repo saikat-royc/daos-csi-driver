@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"os"
 	"regexp"
+	"strings"
 
 	"k8s.io/klog/v2"
 )
@@ -75,4 +76,21 @@ func PrepareEmptyDir(targetPath string, createEmptyDir bool) (string, error) {
 	}
 
 	return emptyDirBasePath, nil
+}
+
+type DaosVolumeConfig struct {
+	Container string
+	Pool      string
+	Cluster   string
+}
+
+func ParseVolumeId(volId string) (*DaosVolumeConfig, error) {
+	splitId := strings.Split(volId, "/")
+	if len(splitId) != 2 {
+		return nil, fmt.Errorf("invalid volume handle format %v", volId)
+	}
+	return &DaosVolumeConfig{
+		Pool:      splitId[0],
+		Container: splitId[1],
+	}, nil
 }

@@ -1,7 +1,7 @@
 apiVersion: v1
 data:
   daos_agent.yml: |-
-    access_points: ["10.128.0.7"] # change to daos server IP address
+    access_points: ["10.128.0.85"] # change to daos server IP address
     transport_config:
       allow_insecure: true
     fabric_ifaces:
@@ -10,7 +10,7 @@ data:
       - iface: eth0
         domain: eth0
   daos_control.yml: |-
-    hostlist: ["10.128.0.7"] # change to daos server IP address
+    hostlist: ["10.128.0.85"] # change to daos server IP address
     transport_config:
       allow_insecure: true
 kind: ConfigMap
